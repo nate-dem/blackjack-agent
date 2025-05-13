@@ -8,7 +8,7 @@ class MakeEnvironment:
         default_params = {'natural': True, 'sab': False, 'render_mode': 'human'}
         params = env_params or default_params
         self.env = gym.make(env_name, **params)
-        self.observations = None
+        self.observation = None
         self.info = None
 
     def reset(self, seed: int = None):
