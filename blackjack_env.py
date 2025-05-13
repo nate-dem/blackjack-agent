@@ -6,7 +6,7 @@ class MakeEnvironment:
         env_params: dict = None
     ):
         default_params = {'natural': True, 'sab': False, 'render_mode': 'human'}
-        params = env_params or default_params
+        params = {**defaults, **(env_params or {})}
         self.env = gym.make(env_name, **params)
         self.observation = None
         self.info = None
@@ -30,5 +30,10 @@ class MakeEnvironment:
     def close(self):
         self.env.close()
 
+    @property
     def action_space(self):
         return self.env.action_space
+
+    @property
+    def observation_space(self):
+        return self.env.observation_space
