@@ -1,31 +1,23 @@
 import gymnasium as gym
+import numpy as np
+from blackjack_env import MakeEnvironment
+from collections import defaultdict
 
-class MakeEnvironment:
+class TabularQLearning:
     def __init__(self, 
-        env_name: str = 'Blackjack-v1',
-        env_params: dict = None
+        env: MakeEnvironment,
+        learningRate: float,
+        initEpsilon: float,
+        epsilonDecay: float,
+        finalEpsilon: float,
+        discount: float = 0.8,
     ):
-        default_params = {'natural': True, 'sab': False, 'render_mode': 'human'}
-        params = env_params or default_params
-        self.env = gym.make(env_name, **params)
-        self.observation = None
-        self.info = None
+        self.env = env
+        self.learning_rate = learningRate
+        self.discount = discount
+        self.init_epsilon = initEpsilon
+        self.epsilon_decay = epsilonDecay
+        self.final_epsilon = finalEpsilon
+        self.Q = defaultdict(lambda: np.zeros(env.action_space.n))
 
-    def reset(self, seed: int = None):
-        if seed is not None:
-            self.observation, self.info = self.env.reset(seed=seed)
-        else:
-            self.observation, self.info = self.env.reset()
-        return self.observation, self.info
 
-    def step(self, action):
-        obs, reward, terminated, truncated, info = self.env.step(action)
-        done = terminated or truncated
-        self.observation, self.info = obs, info
-        return obs, reward, done, info
-
-    def render(self):
-        return self.env.render()
-
-    def close(self):
-        self.env.close()
