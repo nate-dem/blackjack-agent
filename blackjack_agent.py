@@ -47,4 +47,49 @@ class TabularQLearning:
             
             self.epsilon = max(self.epsilon * self.epsilon_decay, self.final_epsilon)
 
+    def evaluation(self, num_iterations: int):
+        prev_epsilon = self.epsilon
+        self.epsilon = 0.0
+
+        total_score, wins, losses, pushes = 0, 0, 0, 0
+        for _ in range(num_iterations):
+            state, _ = self.env.reset()
+            
+            done = False
+            cur_score = 0
+            while not done:
+                action = self.select_action(state)
+                state, reward, terminated, truncated, info = self.env.step(action)
+                done = terminated or truncated
+
+                cur_score += reward
+
+            if cur_score > 0:
+                wins += 1
+            elif cur_score == 0:
+                pushes += 1
+            else:
+                losses += 1
+
+            total_score += cur_score
+
+        avg_score = total_score / num_iterations
+        win_percentage = wins / num_iterations
+        loss_percentage = losses / num_iterations
+        push_percentage = pushes / num_iterations
+
+        self.epsilon = prev_epsilon
+
+        results = {
+            'avg_score': avg_score,
+            'win_percentage': win_percentage,
+            'loss_percentage': loss_percentage,
+            'push_percentage': push_percentage
+        }
+
+        return results
+
+
+
+
 
