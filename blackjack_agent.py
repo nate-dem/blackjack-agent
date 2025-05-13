@@ -18,6 +18,7 @@ class TabularQLearning:
         self.init_epsilon = init_epsilon
         self.epsilon_decay = epsilon_decay
         self.final_epsilon = final_epsilon
+        self.epsilon = init_epsilon
         self.Q = defaultdict(lambda: np.zeros(env.action_space.n))
 
     def select_action(self, state):
@@ -27,6 +28,8 @@ class TabularQLearning:
         return int(np.argmax(self.Q[state]))
 
     def learn_policy(self, num_iterations: int):
+        self.epsilon = self.init_epsilon
+        
         for i in range(1, num_iterations + 1):
             state, _ = self.env.reset()
             done = False
@@ -41,5 +44,7 @@ class TabularQLearning:
                 self.Q[state][action] = cur_q
 
                 state = next_state
+            
+            self.epsilon = max(self.epsilon * self.epsilon_decay, self.final_epsilon)
 
 
