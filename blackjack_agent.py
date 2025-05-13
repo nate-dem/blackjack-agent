@@ -10,7 +10,7 @@ class TabularQLearning:
         init_epsilon: float,
         epsilon_decay: float,
         final_epsilon: float,
-        discount: float = 0.8,
+        discount: float = 0.95,
     ):
         self.env = env
         self.learning_rate = learning_rate
@@ -88,6 +88,11 @@ class TabularQLearning:
         }
 
         return results
+
+
+if __name__ == "__main__":
+    env = MakeEnvironment()
+    agent = TabularQLearning(learning_rate=0.01, init_epsilon=1.0, epsilon_decay=0.99, final_epsilon=0.1, discount=discount)
 
 
 
