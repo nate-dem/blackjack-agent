@@ -20,4 +20,9 @@ class TabularQLearning:
         self.final_epsilon = final_epsilon
         self.Q = defaultdict(lambda: np.zeros(env.action_space.n))
 
+    def select_action(self, state):
+        rand_choice = np.random.rand()
+        if rand_choice < self.epsilon:
+            return self.env.action_space.sample()
+        return int(np.argmax(self.Q[state]))
 
