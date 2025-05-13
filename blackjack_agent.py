@@ -26,3 +26,20 @@ class TabularQLearning:
             return self.env.action_space.sample()
         return int(np.argmax(self.Q[state]))
 
+    def learn_policy(self, num_iterations: int):
+        for i in range(1, num_iterations + 1):
+            state, _ = self.env.reset()
+            done = False
+
+            while not done:
+                action = self.select_action(state)
+                next_state, reward, terminated, truncated, info = self.env.step(action)
+                done = terminated or truncated
+                
+                best_next = max(self.Q[next_state])
+                cur_q = (((1 - self.learning_rate) * self.Q[state][action]) + (self.learning_rate * (reward + (self.discount * best_next))))
+                self.Q[state][action] = cur_q
+
+                state = next_state
+
+
