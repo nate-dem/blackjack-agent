@@ -92,7 +92,38 @@ class TabularQLearning:
 
 if __name__ == "__main__":
     env = MakeEnvironment()
-    agent = TabularQLearning(learning_rate=0.01, init_epsilon=1.0, epsilon_decay=0.99, final_epsilon=0.1, discount=discount)
+    # takes long to converge on 100000 examples
+    learning_rate = 0.0001
+    init_epsilon = 1.0
+    num_iterations = 100000
+    epsilon_decay = 0.99
+    final_epsilon = 0.1
+
+    agent = TabularQLearning(env=env, learning_rate=learning_rate, init_epsilon=init_epsilon, epsilon_decay=epsilon_decay, final_epsilon=final_epsilon)
+    agent.learn_policy(num_iterations=num_iterations)
+
+    evaluate_iterations = 20000
+    results = agent.evaluation(num_iterations=evaluate_iterations)
+    # print(results)
+    env.close()
+
+    env_display = MakeEnvironment(env_params={'natural': True, 'sab': False, 'render_mode': 'human'})
+    for _ in range(10):
+        state, _ = env_display.reset()
+        done = False
+
+        while not done:
+            env_display.render()
+            action = agent.select_action(state)
+            next_state, reward, terminated, truncated, info = env_display.step(action)
+
+            done = terminated or truncated
+            state = next_state
+
+    env_display.close()
+
+
+
 
 
 

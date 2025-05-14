@@ -5,8 +5,8 @@ class MakeEnvironment:
         env_name: str = 'Blackjack-v1',
         env_params: dict = None
     ):
-        default_params = {'natural': True, 'sab': False, 'render_mode': 'human'}
-        params = {**defaults, **(env_params or {})}
+        default_params = {'natural': True, 'sab': False, 'render_mode': None}
+        params = {**default_params, **(env_params or {})}
         self.env = gym.make(env_name, **params)
         self.observation = None
         self.info = None
@@ -20,9 +20,8 @@ class MakeEnvironment:
 
     def step(self, action):
         obs, reward, terminated, truncated, info = self.env.step(action)
-        done = terminated or truncated
         self.observation, self.info = obs, info
-        return obs, reward, done, info
+        return obs, reward, terminated, truncated, info
 
     def render(self):
         return self.env.render()
@@ -33,7 +32,3 @@ class MakeEnvironment:
     @property
     def action_space(self):
         return self.env.action_space
-
-    @property
-    def observation_space(self):
-        return self.env.observation_space
